@@ -142,7 +142,6 @@ CREATE TABLE Expedition (
     ID_Date_Depart_Reel NUMBER,
     ID_Date_Arrive_Reel NUMBER,
     ID_Entreprise NUMBER,
-
     -- Mesures (Faits)
     Annulation NUMBER(1), -- 1 pour Oui, 0 pour Non
     Quantite_Mouvement NUMBER, -- 1 pour un chargement, -1 pour un déchargement
@@ -150,17 +149,15 @@ CREATE TABLE Expedition (
     Duree_Reel NUMBER,
     Poids NUMBER,
     Prix_Facture NUMBER,
-    
     -- Définition des contraintes de clés étrangères
     CONSTRAINT fk_exp_navire FOREIGN KEY (ID_Navire) REFERENCES Dim_Navire(ID_Navire),
     CONSTRAINT fk_exp_voyage FOREIGN KEY (ID_Voyage) REFERENCES Dim_Voyage(ID_Voyage),
     CONSTRAINT fk_exp_conteneur FOREIGN KEY (ID_Conteneur) REFERENCES Dim_Conteneur(ID_Conteneur),
     CONSTRAINT fk_exp_entreprise FOREIGN KEY (ID_Entreprise) REFERENCES Dim_Entreprise(ID_Entreprise),
-    
     -- Clés étrangères pointant vers les dimensions partagées (Port et Date)
     CONSTRAINT fk_exp_port_charge FOREIGN KEY (ID_Port_Chargement) REFERENCES Dim_Port(ID_Port),
     CONSTRAINT fk_exp_port_decharge FOREIGN KEY (ID_Port_Dechargement) REFERENCES Dim_Port(ID_Port),
-    
+    -- Clés étrangères pointant vers des dates
     CONSTRAINT fk_exp_date_charge FOREIGN KEY (ID_Date_Chargement) REFERENCES Dim_Date(ID_Date),
     CONSTRAINT fk_exp_date_decharge FOREIGN KEY (ID_Date_Dechargement) REFERENCES Dim_Date(ID_Date),
     CONSTRAINT fk_exp_date_annul FOREIGN KEY (ID_Date_Annulation) REFERENCES Dim_Date(ID_Date),
@@ -174,7 +171,7 @@ CREATE TABLE Expedition (
 -- 3. PARTIE (a) : VUES VIRTUELLES POUR DIMENSIONS PARTAGÉES
 --------------------------------------------------------
 
--- Vues pour la dimension Port (Role-Playing)
+-- Vues pour la dimension Port
 CREATE OR REPLACE VIEW V_Port_Chargement AS
 SELECT 
     ID_Port AS ID_Port_Chargement,
@@ -190,7 +187,7 @@ SELECT
 FROM Dim_Port;
 
 
--- Vues pour la dimension Date (Role-Playing)
+-- Vues pour la dimension Date
 CREATE OR REPLACE VIEW V_Date_Chargement AS
 SELECT 
     ID_Date AS ID_Date_Chargement,
@@ -208,9 +205,6 @@ SELECT
     ID_Date AS ID_Date_Annulation,
     Date_Complete, Jour, Mois, Annee
 FROM Dim_Date;
-
--- (Vous pouvez continuer à créer des vues pour les autres rôles de la date...)
--- V_Date_Depart_Prevu, V_Date_Arrive_Prevu, etc.
 
 COMMIT;
 
