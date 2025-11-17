@@ -90,7 +90,7 @@ CREATE TABLE Dim_Conteneur (
     Couleur VARCHAR2(30),
     Marque VARCHAR2(50),
     Est_Refrigere VARCHAR2(3), -- 'Oui'/'Non'
-    Client VARCHAR2(100),
+    Client VARCHAR2(100)
 );
 
 -- Dimension Entreprise (Client/Filiale)

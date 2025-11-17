@@ -82,8 +82,7 @@ SELECT
     Annee,
     -- On affiche les taux pour vérification
     Taux_Remplissage_Refrigere_Pct AS Taux_Reefer,
-    Taux_Remplissage_Standard_Pct AS Taux_Standard,
-    
+    Taux_Remplissage_Standard_Pct AS Taux_Standard, 
     -- Petit calcul bonus : le déséquilibre
     (Taux_Remplissage_Refrigere_Pct - Taux_Remplissage_Standard_Pct) AS Ecart_Utilisation
 FROM 
@@ -91,7 +90,6 @@ FROM
 WHERE 
     -- Condition 1 : Très forte demande en frigo
     Taux_Remplissage_Refrigere_Pct >= 80
-    
     -- Condition 2 : Faible demande en standard
     AND Taux_Remplissage_Standard_Pct <= 30
 ORDER BY 
