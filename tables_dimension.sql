@@ -1,6 +1,4 @@
---------------------------------------------------------
--- 0. NETTOYAGE (DROP) DES TABLES
---------------------------------------------------------
+
 BEGIN
     EXECUTE IMMEDIATE 'DROP TABLE Expedition CASCADE CONSTRAINTS';
 EXCEPTION WHEN OTHERS THEN NULL;
@@ -42,10 +40,6 @@ EXCEPTION WHEN OTHERS THEN NULL;
 END;
 /
 
---------------------------------------------------------
--- 1. CRÉATION DES TABLES DE DIMENSIONS
---------------------------------------------------------
-
 -- Dimension Navire
 CREATE TABLE Dim_Navire (
     ID_Navire NUMBER PRIMARY KEY,
@@ -71,15 +65,15 @@ CREATE TABLE Dim_Port (
 
 -- Dimension Date
 CREATE TABLE Dim_Date (
-    ID_Date NUMBER PRIMARY KEY, -- Format YYYYMMDD
+    ID_Date NUMBER PRIMARY KEY,
     Date_Complete DATE,
     Description VARCHAR2(50),
     Jour VARCHAR2(10),
     Mois VARCHAR2(20),
     Annee NUMBER,
     Annee_Fiscal NUMBER,
-    Periode_Vacances VARCHAR2(3), -- 'Oui'/'Non'
-    En_Semaine VARCHAR2(3) -- 'Oui'/'Non'
+    Periode_Vacances VARCHAR2(3), 
+    En_Semaine VARCHAR2(3) 
 );
 
 -- Dimension Conteneur
@@ -89,11 +83,11 @@ CREATE TABLE Dim_Conteneur (
     Statut VARCHAR2(50),
     Couleur VARCHAR2(30),
     Marque VARCHAR2(50),
-    Est_Refrigere VARCHAR2(3), -- 'Oui'/'Non'
+    Est_Refrigere VARCHAR2(3),
     Client VARCHAR2(100)
 );
 
--- Dimension Entreprise (Client/Filiale)
+-- Dimension Entreprise
 CREATE TABLE Dim_Entreprise (
     ID_Entreprise NUMBER PRIMARY KEY,
     Nom VARCHAR2(100),
@@ -113,7 +107,7 @@ CREATE TABLE Dim_Voyage (
     CONSTRAINT fk_voyage_port_arrive FOREIGN KEY (ID_Port_Arrive) REFERENCES Dim_Port(ID_Port)
 );
 
--- Table Pont pour la Hiérarchie des Entreprises (Partie facultative b)
+-- Table Pont pour la Hiérarchie des Entreprises
 CREATE TABLE Pont_Entreprise_Hierarchie (
     ID_Parent NUMBER,
     ID_Fils NUMBER,
@@ -125,10 +119,9 @@ CREATE TABLE Pont_Entreprise_Hierarchie (
 
 
 --------------------------------------------------------
--- 2. CRÉATION DE LA TABLE DE FAITS (EXPEDITION)
+-- CRÉATION DE LA TABLE DE FAITS (EXPEDITION)
 --------------------------------------------------------
 CREATE TABLE Expedition (
-    -- Clés étrangères (Contexte)
     ID_Navire NUMBER,
     ID_Voyage NUMBER,
     ID_Conteneur NUMBER,
@@ -143,13 +136,12 @@ CREATE TABLE Expedition (
     ID_Date_Arrive_Reel NUMBER,
     ID_Entreprise NUMBER,
     -- Mesures (Faits)
-    Annulation NUMBER(1), -- 1 pour Oui, 0 pour Non
-    Quantite_Mouvement NUMBER, -- 1 pour un chargement, -1 pour un déchargement
+    Annulation NUMBER(1),
+    Quantite_Mouvement NUMBER, 
     Duree_Prevu NUMBER,
     Duree_Reel NUMBER,
     Poids NUMBER,
     Prix_Facture NUMBER,
-    -- Définition des contraintes de clés étrangères
     CONSTRAINT fk_exp_navire FOREIGN KEY (ID_Navire) REFERENCES Dim_Navire(ID_Navire),
     CONSTRAINT fk_exp_voyage FOREIGN KEY (ID_Voyage) REFERENCES Dim_Voyage(ID_Voyage),
     CONSTRAINT fk_exp_conteneur FOREIGN KEY (ID_Conteneur) REFERENCES Dim_Conteneur(ID_Conteneur),
@@ -168,7 +160,7 @@ CREATE TABLE Expedition (
 );
 
 --------------------------------------------------------
--- 3. PARTIE (a) : VUES VIRTUELLES POUR DIMENSIONS PARTAGÉES
+-- VUES VIRTUELLES POUR DIMENSIONS PARTAGÉES
 --------------------------------------------------------
 
 -- Vues pour la dimension Port
